@@ -83,19 +83,19 @@ class TestBase58:
 class TestBase58Check:
 
     @pytest.mark.parametrize('_,__,encoded', TEST_DATA)
-    def test_decoding_incorrect_address_raises_incorrectaddress(self, _, __, encoded):
+    def test_decoding_invalid_address_raises_incorrectaddress(self, _, __, encoded):
         """Assert encoding incorrect address raises IncorrectAddress"""
         with pytest.raises(base58check.IncorrectAddress):
             defective_encoded = encoded[-10:] + encoded[:-10]
             base58check.b58check_decode(defective_encoded)
 
     @pytest.mark.parametrize('_,__,encoded', TEST_DATA)
-    def test_correct_address(self, _, __, encoded):
+    def test_valid_address(self, _, __, encoded):
         """Assert correct address"""
         assert base58check.b58check_address_is_valid(encoded)
 
     @pytest.mark.parametrize('_,__,encoded', TEST_DATA)
-    def test_incorrect_address(self, _, __, encoded):
+    def test_invalid_address(self, _, __, encoded):
         """Assert incorrect address"""
         defective_encoded = encoded[-10:] + encoded[:-10]
         assert not base58check.b58check_address_is_valid(defective_encoded)

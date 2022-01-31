@@ -25,11 +25,11 @@ Usage::
     ...                       '\x83\x85J\xde\x0b\xd2,\xdb\x0b\xb9`\xde')
     b'1BoatSLRHtKNngkdXEeobR76b53LETtpyT'
 
-:copyright: (c) 2018 by Joseph Black.
+:copyright: (c) 2018 by Nik Kuvhinov.
 :license: MIT, see LICENSE for more details.
 """
 
-__version__ = '1.0.2'
+__version__ = '2.0.0'
 
 
 from hashlib import sha256

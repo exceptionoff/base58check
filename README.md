@@ -1,9 +1,9 @@
 # Base58Check
-[![Build Status](https://travis-ci.org/joeblackwaslike/base58check.svg?branch=master)](https://travis-ci.org/joeblackwaslike/base58check) [![Github Repo](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/joeblackwaslike/base58check) [![Pypi Version](https://img.shields.io/pypi/v/base58check.svg)](https://pypi.python.org/pypi/base58check) [![Pypi License](https://img.shields.io/pypi/l/base58check.svg)](https://pypi.python.org/pypi/base58check) [![Pypi Wheel](https://img.shields.io/pypi/wheel/base58check.svg)](https://pypi.python.org/pypi/base58check) [![Pypi Versions](https://img.shields.io/pypi/pyversions/base58check.svg)](https://pypi.python.org/pypi/base58check)
+ [![Pypi Version](https://img.shields.io/pypi/v/base58check.svg)](https://pypi.python.org/pypi/base58check) [![Pypi License](https://img.shields.io/pypi/l/base58check.svg)](https://pypi.python.org/pypi/base58check) [![Pypi Wheel](https://img.shields.io/pypi/wheel/base58check.svg)](https://pypi.python.org/pypi/base58check) [![Pypi Versions](https://img.shields.io/pypi/pyversions/base58check.svg)](https://pypi.python.org/pypi/base58check)
 
 
 ## Maintainer
-Joe Black | <me@joeblack.nyc> | [github](https://github.com/joeblackwaslike)
+Nik Kuvshinov | <exceptionoff@gmail.com> | [github](https://github.com/exceptionoff)
 
 
 ## Introduction
@@ -33,12 +33,22 @@ pip3 install base58check
 ```python
 >>> base58check.b58encode(b'1BoatSLRHtKNngkdXEeobR76b53LETtpyT')
 b'\x00v\x80\xad\xec\x8e\xab\xca\xba\xc6v\xbe\x9e\x83\x85J\xde\x0b\xd2,\xdb\x0b\xb9`\xde'
+>>> base58check.b58check_encode(b'_&\x13y\x1b6\xf6g\xfd\xb8\xe9V\x08\xb5^=\xf4\xc5\xf9\xeb')
+b'19g6oo8foQF5jfqK9gH2bLkFNwgCenRBPD'
 ```
 
 ### decoding (input can be text or bytes here)
 ```python
 >>> base58check.b58decode('\x00v\x80\xad\xec\x8e\xab\xca\xba\xc6v\xbe\x9e\x83\x85J\xde\x0b\xd2,\xdb\x0b\xb9`\xde')
 b'1BoatSLRHtKNngkdXEeobR76b53LETtpyT'
+>>> base58check.b58check_decode(b'19g6oo8foQF5jfqK9gH2bLkFNwgCenRBPD')
+b'_&\x13y\x1b6\xf6g\xfd\xb8\xe9V\x08\xb5^=\xf4\xc5\xf9\xeb'
+```
+
+### check address
+```python
+>>> base58check.b58check_address_is_valid(b'19g6oo8foQF5jfqK9gH2bLkFNwgCenRBPD')
+True
 ```
 
 ## Changes
