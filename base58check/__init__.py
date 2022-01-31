@@ -41,9 +41,9 @@ DEFAULT_CHARSET = b'123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 
 
 def b58encode(val, charset=DEFAULT_CHARSET):
-    """Encode input to base58check encoding.
+    """Encode input to base58 encoding.
 
-    :param bytes val: The value to base58check encode.
+    :param bytes val: The value to base58 encode.
     :param bytes charset: (optional) The character set to use for encoding.
     :return: the encoded bytestring.
     :rtype: bytes
@@ -94,9 +94,9 @@ def b58encode(val, charset=DEFAULT_CHARSET):
 
 
 def b58decode(val, charset=DEFAULT_CHARSET):
-    """Decode base58check encoded input to original raw bytes.
+    """Decode base58 encoded input to original raw bytes.
 
-    :param bytes val: The value to base58cheeck decode.
+    :param bytes val: The value to base58 decode.
     :param bytes charset: (optional) The character set to use for decoding.
     :return: the decoded bytes.
     :rtype: bytes
@@ -139,3 +139,79 @@ def b58decode(val, charset=DEFAULT_CHARSET):
 
     prefix = b'\0' * pad_len
     return prefix + bytes(result)
+
+
+def b58check_encode(val: bytes, address_version=0, charset=DEFAULT_CHARSET):
+    """Encode input to base58check encoding.
+
+        :param bytes val: The value to base58check encode.
+        :param address_version: Address version
+        :param bytes charset: (optional) The character set to use for encoding.
+        :return: the encoded bytestring.
+        :rtype: bytes
+        :raises: TypeError: if `val` is not bytes.
+
+        Usage::
+
+          >>> import base58check
+          >>> base58check.b58check_encode(b'_&\x13y\x1b6\xf6g\xfd\xb8\xe9V\x08\xb5^=\xf4\xc5\xf9\xeb')
+          b'19g6oo8foQF5jfqK9gH2bLkFNwgCenRBPD'
+        """
+    v_addr = hex(address_version).removeprefix('0x')
+    if len(v_addr) == 1:
+        v_addr = '0' + v_addr
+    v_addr = bytes.fromhex(v_addr)
+    chk_sum = sha256(sha256(v_addr + val).digest()).digest()[:4]
+
+    return b58encode(v_addr + val + chk_sum, charset=charset)
+
+
+def b58check_address_is_valid(val: bytes, charset=DEFAULT_CHARSET):
+    """Base58check address validation.
+
+            :param bytes val: The value for the base58check address.
+            :param bytes charset: (optional) The character set to use for decoding.
+            :return: address is correct?
+            :rtype: bool
+
+            Usage::
+
+              >>> import base58check
+              >>> base58check.b58check_address_is_valid(b'19g6oo8foQF5jfqK9gH2bLkFNwgCenRBPD')
+              True
+            """
+    b58check_address_bytes = b58decode(val, charset=charset)
+
+    expected_chk_sum = b58check_address_bytes[-4:]
+    actual_chk_sum = sha256(sha256(b58check_address_bytes[:-4]).digest()).digest()[:4]
+
+    if expected_chk_sum != actual_chk_sum:
+        return False
+
+    return True
+
+
+def b58check_decode(val: bytes, charset=DEFAULT_CHARSET):
+    """Decode base58check encoded input to original raw bytes.
+
+        :param bytes val: The value to base58check decode.
+        :param bytes charset: (optional) The character set to use for decoding.
+        :return: the decoded bytes.
+        :rtype: bytes
+        :raises: IncorrectAddress: if `val` is incorrect address.
+
+        Usage::
+
+          >>> import base58check
+          >>> base58check.b58check_decode(b'19g6oo8foQF5jfqK9gH2bLkFNwgCenRBPD')
+          b'_&\x13y\x1b6\xf6g\xfd\xb8\xe9V\x08\xb5^=\xf4\xc5\xf9\xeb'
+
+        """
+    if not b58check_address_is_valid(val, charset=charset):
+        raise IncorrectAddress
+
+    return b58decode(val, charset=charset)[1:-4]
+
+
+class IncorrectAddress(Exception):
+    pass
